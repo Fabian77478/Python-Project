@@ -1,0 +1,118 @@
+🧠 🛠️ Profi-Aufgabe für Systemtechniker / DevOps-Level
+📝 Projekt: Intelligentes System- und Netzwerk-Monitoring-Tool mit Alerting, Logging & Multi-System-Unterstützung
+🔧 Ziel des Projekts
+Du entwickelst ein komplexes Monitoring-Tool in Python, das:
+
+System- und Netzwerkdaten live überwacht
+
+Logdateien schreibt
+
+automatische Warnungen bei Fehlern erzeugt (z. B. bei Ausfall eines Hosts oder hoher CPU-Auslastung)
+
+optional mehrere Rechner gleichzeitig überwachen kann (z. B. über SSH)          
+
+langfristig Daten speichert (CSV oder JSON)
+
+eine Web-basierte GUI (z. B. mit Flask) enthält
+
+📋 Funktionen im Detail
+🖥️ 1. System-Infos & Live-Daten (lokal + remote)
+Hostname, IP-Adresse, OS & Version, MAC-Adresse
+
+Aktuelles Datum & Zeit
+
+Aktuelle CPU-Auslastung (z. B. psutil)
+
+Aktueller RAM-Verbrauch
+
+Uptime seit Systemstart
+
+🌐 2. Netzwerk-Monitoring mit Alerting
+Ping-Test zu beliebigen Hosts (z. B. von Datei eingelesen)
+
+Antwortzeit messen und loggen
+
+Alarm auslösen (Popup / Konsole / Log-Eintrag), wenn:
+
+Host nicht erreichbar
+
+Antwortzeit > 150 ms
+
+📦 3. Daten speichern & exportieren
+In log.txt + tägliche system_stats_YYYYMMDD.csv
+
+Optional: JSON für API-Verwendung
+
+🔔 4. Echtzeit-Warnsystem
+Bei Problem automatische Ausgabe in Konsole + Log + (optional) E-Mail
+
+Logging mit Python logging-Modul
+
+🧠 5. Mehrere Hosts überwachen (optional DevOps-Teil)
+Liste mit Hostnamen/IPs aus Datei (targets.txt)
+
+Optional über SSH Systeminformationen abfragen (Modul: paramiko)
+
+Ergebnisse gesammelt anzeigen und loggen
+
+💡 Zusätzliche Erweiterungen (für noch mehr Praxis)
+Feature	Beschreibung
+✅ Web-GUI mit Flask	Zeigt Monitoring-Daten live im Browser
+✅ API-Endpoint	Gibt JSON-Daten der Überwachung aus
+✅ Konfigurierbare Schwellenwerte	Antwortzeit, CPU-Auslastung etc.
+✅ Threads oder Async	parallele Überwachung mehrerer Systeme
+✅ System-Check per Zeitintervall	z. B. alle 60 Sekunden automatisch
+
+🧰 Verwendbare Module
+Modul	Funktion
+socket	IP/Hostname
+platform	OS-Version
+datetime	Zeit
+uuid	MAC-Adresse
+psutil	CPU, RAM, Uptime
+subprocess	Ping, Shell-Kommandos
+logging	Logs schreiben
+csv/json	Exportformate
+flask	Webserver & GUI
+paramiko	SSH auf andere Systeme
+threading	Mehrere Hosts gleichzeitig prüfen
+
+📌 Musteraufbau für dein Projektverzeichnis
+arduino
+Kopieren
+Bearbeiten
+devops_monitoring_tool/
+├── main.py
+├── modules/
+│   ├── system_info.py
+│   ├── network_check.py
+│   ├── logger.py
+├── static/               ← Für Flask GUI
+│   └── style.css
+├── templates/
+│   └── dashboard.html
+├── logs/
+│   └── log_2025-07-02.txt
+├── config.json
+├── targets.txt
+└── requirements.txt
+💬 Was kannst du damit lernen?
+✅ Monitoring wie bei Prometheus/Datadog (im Kleinen)
+✅ Logs wie bei ELK (Elastic Stack)
+✅ Alerting wie in echten Infrastrukturprojekten
+✅ GUI + API wie bei modernen DevOps-Tools
+✅ Arbeiten mit echten Tools wie psutil, Flask, paramiko
+
+📦 Wenn du willst, erstelle ich dir:
+ Startpaket mit main.py, Modulstruktur, Logging, Beispiel-Flask-GUI
+
+ Anleitung zur Erweiterung um SSH
+
+ Lösung mit CPU/Memory-Monitoring & automatischer Überprüfung
+
+Willst du das? Schreib einfach:
+
+„Starte das DevOps-Monitoring-Projekt mit Flask und Logging“
+
+Dann bekommst du von mir die erste Version, sauber strukturiert und bereit zum Ausbauen.
+💪 Ideal, um dich auf echte DevOps-Jobs oder Berufsschulprojekte vorzubereiten.
