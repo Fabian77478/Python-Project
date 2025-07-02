@@ -1,82 +1,102 @@
-#Autor : Noah Kronhardt
-#Datum : 02.07.2025
-#Beschreibung : Dieses Python-Programm, misst die CPU- und RAM Auslastung alle 2 Sekunden für 30 Sekunden lang und schreibt sie in eine .csv Datei
+# Autor: Noah Kronhardt
+# Datum: 02.07.2025
+# Beschreibung: Dieses Python-Programm misst die CPU- und RAM-Auslastung alle 2 Sekunden
+# für 30 Sekunden lang und schreibt sie in eine .csv-Datei.
 
-#Dieses Modul für Systemdaten:
 import psutil
-
-#Dieses Modul ist für Dateischreiben
 import csv
-
-#Dieses Modul für Zeitstempel
 import datetime
-
-#Modul für Zeitsteuerung
 import time
-
 import os
 
-import subprocess
-
+# CPU-Auslastung abrufen
 def Get_processorUsage():
     return psutil.cpu_percent(interval=0.5)
 
-def Get_RAMavailable():
-    return int(psutil.virtual_memory().total - psutil.virtual_memory().available)
+# RAM-Auslastung (verwendeter Speicher)
+def Get_RAMusage():
+    return int(psutil.virtual_memory().used)
 
+# CSV-Header in bestehende Datei schreiben
 def Create_LogAttributes(Path):
-    fields = ["Time", "CPU Auslastung", "RAM Auslastung(GB)"]
+    fields = ["Time", "CPU Auslastung", "RAM Auslastung (GB)"]
     if os.path.exists(Path):
-            if Path.endswith(".csv"):
-                 with open (Path, "a") as F:
-                      csvwriter = csv.writer(F)
-                      csvwriter.writerow(fields)
-            else:
-                 print (f"{Path} ist keine CSV Datei")
+        if Path.endswith(".csv"):
+            with open(Path, "a", newline='') as f:
+                csvwriter = csv.writer(f)
+                csvwriter.writerow(fields)
+        else:
+            print(f"{Path} ist keine CSV-Datei.")
     else:
-         print (f"{Path} existiert nicht")
+        print(f"{Path} existiert nicht.")
 
-def Create_NewLogfile(Directory, Name):
-    if os.path.exists(Directory) and os.path.isdir(Directory):
-          Command = ["mkdir", Name, ".csv"]
-          subprocess.call(Command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    else:
-         print (f"{Directory} exists")
+# Neue CSV-Datei erstellen inkl. Header
+def Create_NewLogfile(Path):
+    with open(Path, "w", newline='') as f:
+        csvwriter = csv.writer(f)
+        csvwriter.writerow(["Time", "CPU Auslastung", "RAM Auslastung (GB)"])
 
 def main():
-    print ("1: Logdatei(.csv) vorhanden und ohne Attribute")
-    print ("2: Logdatei(.csv) vorhanden mit Attributen")
-    print ("3. Noch keine Logdatei vorhanden")
-    AntwortLogdatei = int(input())
-    if (AntwortLogdatei == 1 or AntwortLogdatei == 2):
-         print ("Gebe den Pfad zur deiner Logdatei an")
-         Path = input()
-         if (AntwortLogdatei == 1):
-              Create_LogAttributes(Path)
-         else:
+    print("1: Logdatei (.csv) vorhanden und ohne Attribute")
+    print("2: Logdatei (.csv) vorhanden mit Attributen")
+    print("3: Noch keine Logdatei vorhanden")
+
+    AntwortLogdatei = int(input("Auswahl (1/2/3): "))
+
+    Path = ""
+
+    if AntwortLogdatei in [1, 2]:
+        Path = input("Gebe den Pfad zu deiner Logdatei an: ")
+
+        if AntwortLogdatei == 1:
+            Create_LogAttributes(Path)
+        else:
             if os.path.exists(Path) and Path.endswith(".csv"):
-                 print(f"{Path} ist gültig")
+                print(f"{Path} ist gültig.")
             else:
-                 print(f"{Path} ist ungültig")
+                print(f"{Path} ist ungültig.")
+                return  # abbrechen
+
+    elif AntwortLogdatei == 3:
+        Ordner = input("Gebe den Ordnerpfad an, in dem die Datei gespeichert werden soll: ")
+        Dateiname = input("Gebe den Dateinamen ein (ohne .csv): ")
+
+        if not os.path.exists(Ordner):
+            print(f"Der Ordner '{Ordner}' existiert nicht.")
+            return
+
+        Path = os.path.join(Ordner, f"{Dateiname}.csv")
+        Create_NewLogfile(Path)
+        print(f"Neue Logdatei erstellt: {Path}")
+
     else:
-        print ("Gebe den Ordner ein in welchem du die Datei speichern möchtest:")
-    #Path = "C:\\Users\\oha_n\\Desktop\\Projekte\\Pyhton\\SystemMonitorGit\\Python-Project\\SystemMonitor\\logs\\systemlog.csv"
+        print("Ungültige Eingabe.")
+        return
+
+    # --- Aufzeichnung starten ---
+    print("Starte Systemüberwachung für 30 Sekunden...")
     start_time = time.time()
-    #print ("System CPU Usage is {} %".format(Get_processorUsage()))
-    #print (f"System RAM Usage is {int(Get_RAMusage() /1024 /1024 /1024)} GB") 
+
     while time.time() - start_time < 30:
-        #zeitstempel generieren
-        Zeitstempel = datetime.datetime.now()
-        Processor_Usage = Get_processorUsage()
-        RAM_Available = Get_RAMavailable()
-        row = []
-        
-        row.append(f"{Zeitstempel}")
-        row.append(f"{Processor_Usage: .2f} %")
-        row.append(f"{int(RAM_Available /1024 /1024 /1024)} GB")
-        with open(Path, "a") as csvfile:
-             csvwriter = csv.writer(csvfile)
-             csvwriter.writerow(row)
+        timestamp = datetime.datetime.now()
+        cpu_usage = Get_processorUsage()
+        ram_usage = Get_RAMusage()
+
+        row = [
+            f"{timestamp}",
+            f"{cpu_usage:.2f} %",
+            f"{ram_usage / 1024 / 1024 / 1024:.2f} GB"
+        ]
+
+        with open(Path, "a", newline='') as csvfile:
+            csvwriter = csv.writer(csvfile)
+            csvwriter.writerow(row)
+
+        print(f"[{timestamp}] CPU: {cpu_usage:.2f} %, RAM: {ram_usage / 1024 / 1024 / 1024:.2f} GB")
+        time.sleep(2)
+
+    print("Messung abgeschlossen. Logdatei gespeichert unter:")
+    print(Path)
 
 if __name__ == "__main__":
     main()
